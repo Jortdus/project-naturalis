@@ -1,11 +1,11 @@
 import React from "react";
 
-function Class() {
+function Objects() {
     return (
         <div>
-            <h1>Class</h1>
+            <h1>Objects</h1>
         </div>
     );
 }
 
-export default Class;
+export default Objects;
