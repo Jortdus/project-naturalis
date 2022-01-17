@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Categories from "./Components/Categories";
 import Objects from "./Components/Objects";
 
+
 function App() {
     return (
         <Router>
