@@ -1,0 +1,88 @@
+aside {
+    position: fixed;
+    top: 0;
+    left: 0;
+
+    animation-name: open-animation;
+    animation-duration: 0.5s;
+}
+
+.close {
+    animation-name: close-animation;
+    animation-duration: 0.5s;
+}
+
+.object-container {
+    position: relative;
+    color: white;
+    background-color: #2e2d2d;
+
+    width: 480px;
+    height: 100vh;
+    padding: 1.5em;
+}
+
+button {
+    position: absolute;
+    right: 1.5em;
+    width: 15px;
+    height: 15px;
+}
+
+button:hover {
+    cursor: pointer;
+}
+
+.header {
+    padding: 1.25em 0;
+    text-align: center;
+}
+
+h2 {
+    font-size: 2em;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.header ul {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    row-gap: 10px;
+    column-gap: 15px;
+    margin-bottom: 30px;
+}
+
+.header ul li {
+    font-size: 15px;
+    text-transform: uppercase;
+    color: #919191;
+}
+
+img {
+    border-radius: 0.5em;
+    width: 100%;
+    height: 21.25em;
+}
+
+li {
+    list-style-type: none;
+}
+
+@keyframes open-animation {
+    from {
+        left: -480px;
+    }
+    to {
+        left: 0;
+    }
+}
+
+@keyframes close-animation {
+    from {
+        left: 0;
+    }
+    to {
+        left: -480px;
+    }
+}
