@@ -1,7 +1,7 @@
 import React from "react";
+import { Carousel } from "react-responsive-carousel";
 import "./Aside.css";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
-import { Carousel } from "react-responsive-carousel";
 
 function Aside({ gbifObject, setGbifObject }) {
     function handleClick() {
@@ -10,7 +10,6 @@ function Aside({ gbifObject, setGbifObject }) {
             setGbifObject(null);
         }, 500);
     }
-
     return (
         <aside id="object">
             <div className="object-container">
@@ -44,6 +43,7 @@ function Aside({ gbifObject, setGbifObject }) {
                         <li>{gbifObject.identifiedBy}</li>
                         <li>{gbifObject.eventDate}</li>
                         <li>{gbifObject.identifier}</li>
+                        <li>{gbifObject.key}</li>
                     </ul>
                 </div>
 

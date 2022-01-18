@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import "./Objects.css";
 import { useParams } from "react-router-dom";
+import "./Objects.css";
 import data from "../../Data/dataId.json";
 import fetchData from "../../Utils/fetchData.js";
 import Aside from "./Aside/Aside.js";
@@ -36,15 +36,21 @@ function Objects() {
 
     return (
         <div>
-            <h1>{genus}</h1>
-            <ul>
-                {genusObject.ids.map((id) => (
-                    <li onClick={(e) => fetchGbifData(e.target.innerHTML)}>
-                        {id}
-                    </li>
-                ))}
-            </ul>
-            {aside}
+            <div>
+                {/* <h1>{genus}</h1>
+                <ul>
+                    {genusObject.ids.map((id) => (
+                        <li onClick={(e) => fetchGbifData(e.target.innerHTML)}>
+                            {id}
+                        </li>
+                    ))}
+                </ul> */}
+                {aside}
+            </div>
+            <Canvas
+                gbifIds={genusObject.ids}
+                setSelectedGbifObject={setSelectedGbifObject}
+            />
         </div>
     );
 }
