@@ -12,7 +12,6 @@ function Categories() {
             canvasParentRef
         );
         p5.noLoop();
-        p5.overlapping = false
         p5.textAlign("center", "center")
         p5.textSize(28)
         p5.textFont('Helvetica');
@@ -33,16 +32,7 @@ function Categories() {
     };
     console.log(circlePositions)
     const mousePressed = (p5) => {
-        if (p5.dist(p5.mouseX,p5.mouseY,circlePositions[0][1],circlePositions[0][2]) < p5.width / 16 || circlePositions[0][0] === "Plantae"){
-            alert("Plantae")
-        } else if (p5.dist(p5.mouseX,p5.mouseY,circlePositions[0][1],circlePositions[0][2]) < p5.width / 16 || circlePositions[0][0] === "Animalia"){
-            alert("Animalia")
-        } else if (p5.dist(p5.mouseX,p5.mouseY,circlePositions[0][1],circlePositions[0][2]) < p5.width / 16 || circlePositions[0][0] === "Fungi"){
-            alert("Fungi")
-        }
     }
-
-    
 
     return <Sketch setup={setup} draw={draw} mousePressed={mousePressed}/>;
 }
