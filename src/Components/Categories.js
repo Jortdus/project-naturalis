@@ -16,11 +16,7 @@ function Categories() {
         p5.createCanvas(window.innerWidth, window.innerHeight).parent(
             canvasParentRef
         );
-        rawData.forEach(e => {
-            x = p5.width / 2 + p5.random(-300, 300);
-            y = p5.height / 2 + p5.random(-300, 300);
-            circlePositions.push([e.taxonomicRankName, x, y, r])
-        });
+
     };
 
     const draw = (p5) => {
@@ -28,6 +24,14 @@ function Categories() {
         p5.stroke(13, 92, 99);
         p5.strokeWeight(2);
         p5.fill(68, 161, 160);
+
+        rawData.forEach(e => {
+            x = p5.width / 2 + p5.random(-500, 500);
+            y = p5.height / 2 + p5.random(-300, 300);
+            circlePositions.push([e.taxonomicRankName, x, y, r])
+        });
+
+
         circlePositions.forEach(e => {
             p5.ellipse(e[1], e[2], p5.width / 8, p5.width / 8);
         });
@@ -55,13 +59,17 @@ function Categories() {
         circlePositions.forEach((e) => {
             let d = p5.dist(p5.mouseX, p5.mouseY, e[1], e[2]);
             if (d < e[3]) {
-                window.history.pushState('', 'Title', e[0].toLowerCase())
                 p5.clear()
+                window.history.pushState('', 'Title', e[0].toLowerCase())
                 p5.background(102, 102, 255);
-                urlPath = p5.getURLPath()[0]
+                urlPath = p5.getURLPath()[0];
                 Count_0.forEach(c => {
-                    if (c.taxonomicRankName.toLocaleLowerCase() == urlPath) {
+                    if (c.taxonomicRankName.toLowerCase() === urlPath) {
                         rawData = c.children
+                        p5.clear()
+                        circlePositions = []
+                        p5.redraw()
+                        // console.log(rawData)
                     }
                 });
             }
