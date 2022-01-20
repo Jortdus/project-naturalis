@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import "./Objects.css";
 import data from "../../Data/dataId.json";
 import Aside from "./Aside/Aside.js";
+import ObjectCount from "./ObjectCount/ObjectCount.js";
 import Canvas from "./Canvas/Canvas.js";
 
 function Objects() {
@@ -25,9 +26,13 @@ function Objects() {
 
     return (
         <div>
+            <div>
+                <ObjectCount count={genusObject.ids.length} />
+            </div>
             <div>{aside}</div>
             <Canvas
                 gbifIds={genusObject.ids}
+                gbifObject={selectedGbifObject}
                 setGbifObject={setSelectedGbifObject}
             />
         </div>
