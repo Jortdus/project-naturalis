@@ -1,40 +1,109 @@
 import React from "react";
 import Sketch from "react-p5";
-import Count_0 from "../data/Count_0.json";
+import Count_0 from "../Data/Count_0.json";
+
 
 let x;
 let y;
+let r = window.innerWidth / 16;
 let circlePositions = [];
+let rawData = Count_0
+let urlPath;
+// let lastMousePosition = null;
 
 function Categories() {
     const setup = (p5, canvasParentRef) => {
         p5.createCanvas(window.innerWidth, window.innerHeight).parent(
             canvasParentRef
         );
-        p5.noLoop();
-        p5.textAlign("center", "center")
-        p5.textSize(28)
-        p5.textFont('Helvetica');
-    };
-    const draw = (p5) => {
-        p5.noStroke();
-        p5.background(102, 102, 255);
-        // console.log(Count_0[0].count);
-        Count_0.forEach ((e) => {
-            console.log(e.taxonomicRankName);
+        rawData.forEach(e => {
             x = p5.width / 2 + p5.random(-300, 300);
             y = p5.height / 2 + p5.random(-300, 300);
-            p5.ellipse(x, y, p5.width / 8, p5.width / 8);
-            p5.text(e.taxonomicRankName, x, y)
-            circlePositions.push([e.taxonomicRankName,x,y], )
+            circlePositions.push([e.taxonomicRankName, x, y, r])
         });
-        
     };
-    console.log(circlePositions)
-    const mousePressed = (p5) => {
-    }
 
-    return <Sketch setup={setup} draw={draw} mousePressed={mousePressed}/>;
+    const draw = (p5) => {
+        p5.background(102, 102, 255);
+        p5.stroke(13, 92, 99);
+        p5.strokeWeight(2);
+        p5.fill(68, 161, 160);
+        circlePositions.forEach(e => {
+            p5.ellipse(e[1], e[2], p5.width / 8, p5.width / 8);
+        });
+
+        // if (circlePositions.length === 3) {
+        //     circlePositions.forEach(e => {
+        //         p5.ellipse(e[1], e[2], p5.width / 8, p5.width / 8);
+        //         if (x || y === e[1] || e[2]) {
+        //             console.log(e[1], e[2], x, y)
+        //         } else {}
+        //     });
+        // }
+
+        circlePositions.forEach((e) => {
+            p5.textAlign("center", "center")
+            p5.textSize(28)
+            p5.fill("white")
+            p5.noStroke()
+            p5.text(e[0], e[1], e[2])
+        });
+        p5.noLoop();
+    };
+
+    const mouseClicked = (p5) => {
+        circlePositions.forEach((e) => {
+            let d = p5.dist(p5.mouseX, p5.mouseY, e[1], e[2]);
+            if (d < e[3]) {
+                window.history.pushState('', 'Title', e[0].toLowerCase())
+                p5.clear()
+                p5.background(102, 102, 255);
+                urlPath = p5.getURLPath()[0]
+                Count_0.forEach(c => {
+                    if (c.taxonomicRankName.toLocaleLowerCase() == urlPath) {
+                        rawData = c.children
+                    }
+                });
+            }
+        });
+    };
+
+    // const mouseDragged = (p5) => {
+    //     if (lastMousePosition) {
+    //         // Calculate the change in the mouse position
+    //         const change = {
+    //             x: lastMousePosition.x - p5.mouseX,
+    //             y: lastMousePosition.y - p5.mouseY
+    //         };
+    //         circlePositions.forEach((e) => {
+    //             e[1] -= change.x;
+    //             e[2] -= change.y;
+    //         });
+    //     }
+    //     lastMousePosition = {
+    //         x: p5.mouseX,
+    //         y: p5.mouseY
+    //     };
+    // };
+
+    // const mouseReleased = () => {
+    //     lastMousePosition = null;
+    // };
+
+    return ( <
+        Sketch setup = {
+            setup
+        }
+        draw = {
+            draw
+        }
+        // mouseDragged={mouseDragged}
+        // mouseReleased={mouseReleased}
+        mouseClicked = {
+            mouseClicked
+        }
+        />
+    );
 }
 
 export default Categories;
