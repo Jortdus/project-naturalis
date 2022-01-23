@@ -34,6 +34,7 @@ function Categories() {
     };
 
     const draw = (p5) => {
+        p5.frameRate(60)
         p5.noStroke();
         p5.strokeWeight(2);
         p5.fill(68, 161, 160);
@@ -41,15 +42,6 @@ function Categories() {
         circlePositions.forEach((e) => {
             p5.ellipse(e[1], e[2], p5.width / 8, p5.width / 8);
         });
-
-        // if (circlePositions.length === 3) {
-        //     circlePositions.forEach(e => {
-        //         p5.ellipse(e[1], e[2], p5.width / 8, p5.width / 8);
-        //         if (x || y === e[1] || e[2]) {
-        //             console.log(e[1], e[2], x, y)
-        //         } else {}
-        //     });
-        // }
 
         circlePositions.forEach((e) => {
             p5.textAlign("center", "center");
