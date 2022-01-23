@@ -1,6 +1,7 @@
 import React from "react";
 import Sketch from "react-p5";
 import "./Canvas.css";
+import halton from "../../../Utils/halton.js";
 import fetchData from "../../../Utils/fetchData.js";
 
 const url = "https://api.gbif.org/v1/occurrence/";
@@ -9,160 +10,237 @@ const baseY = 3;
 
 let bubbles = [];
 let lines = [];
-let lastMousePosition = null;
+let lastMouseX;
+let lastMouseY;
 let cursor = "grab";
+let hoverSpeciesText = "";
+let hoverSpeciesX = 0;
+let hoverSpeciesY = 0;
 
-function Canvas({ gbifIds, gbifObject, setGbifObject }) {
-    if (!gbifObject) {
+function Canvas({ species, selectedGbifObject, setSelectedGbifObject }) {
+    // Reset the selected button when no object has been selected
+    if (!selectedGbifObject) {
         bubbles.forEach((bubble) => {
             bubble.selected = false;
         });
     }
 
+    // Setup for the canvas
     const setup = (p5, canvasParentRef) => {
         const width = window.innerWidth;
         const height = window.innerHeight;
-        let canvasFactor = 1;
 
-        // Create the canvas
         p5.createCanvas(width, height).parent(canvasParentRef);
+        p5.frameRate(60);
 
-        // This is kind of bad but it works for now
-        if (gbifIds.length <= 15) {
-            canvasFactor = 0.5;
-        } else if (gbifIds.length >= 100 && gbifIds.length < 250) {
-            canvasFactor = 2;
-        } else if (gbifIds.length >= 250) {
-            canvasFactor = 3;
-        }
+        let xAxisOffset = 0;
+        let yAxisOffset = 0;
 
-        console.log(canvasFactor);
+        species.forEach((species) => {
+            let lastBubbleTotal = bubbles.length;
+            let speciesSurface = (species.ids.length / 2) * 250 * 250; // Calculate the required surface
+            let speciesWidth = Math.sqrt(speciesSurface); // Set the width and height equal to the root of the required surface
+            let speciesHeight = Math.sqrt(speciesSurface);
+            let indexTotal = 0;
+            yAxisOffset = height / 2 - speciesHeight / 2; // Calculate the y axis offset to center the bubbles verticaly
 
-        // Create the bubbles based on the provided gbif ids
-        gbifIds.forEach((id, index) => {
-            let x = halton(index, baseX) * width * canvasFactor;
-            let y = halton(index, baseY) * height * canvasFactor;
+            // Add the bubbles
+            species.ids.forEach((id) => {
+                let x = halton(indexTotal, baseX) * speciesWidth + xAxisOffset;
+                let y = halton(indexTotal, baseY) * speciesHeight + yAxisOffset;
+                let r = Math.random() * (55 - 40) + 40;
 
-            // This is also kind of bad but it works for now
-            if (canvasFactor === 0.5) {
-                x += width * 0.25;
-                y += height * 0.25;
-            } else if (canvasFactor === 2) {
-                x -= width / 2;
-                y -= height / 2;
-            } else if (canvasFactor === 3) {
-                x -= width;
-                y -= height;
+                bubbles.push(new Bubble(x, y, r, id, species.species));
+                indexTotal++;
+            });
+
+            xAxisOffset += speciesWidth + 250; // Add the width to the offset to prevent species from overlapping
+
+            // Add the lines to the canvas
+            for (let i = lastBubbleTotal; i < bubbles.length; i++) {
+                for (let j = lastBubbleTotal; j < bubbles.length; j++) {
+                    if (bubbles[i] !== bubbles[j]) {
+                        let d = p5.dist(bubbles[i].x, bubbles[i].y, bubbles[j].x, bubbles[j].y);
+                        if (
+                            (d >= 150 && d <= 250) || // Add a line when the distance between the bubbles is between 150 and 250
+                            bubbles.length - lastBubbleTotal === 2 || // Or when a species only has two or three bubbles
+                            bubbles.length - lastBubbleTotal === 3
+                        ) {
+                            lines.push(
+                                new Line(bubbles[i].x, bubbles[i].y, bubbles[j].x, bubbles[j].y)
+                            );
+                            bubbles[i].line = true;
+                            bubbles[j].line = true;
+                        }
+                    }
+                }
             }
-            let r = Math.random() * (55 - 40) + 40; // Circle radius
-            bubbles.push(new Bubble(x, y, r, id));
-        });
 
-        bubbles.forEach((bubble) => {
-            for (let i = 0; i < bubbles.length; i++) {
-                let d = p5.dist(bubble.x, bubble.y, bubbles[i].x, bubbles[i].y);
-                if (d < 125) {
-                    lines.push(
-                        new Line(bubble.x, bubble.y, bubbles[i].x, bubbles[i].y)
-                    );
+            // Ensure that each bubble is at least connected to one other bubble
+            for (let i = lastBubbleTotal; i < bubbles.length; i++) {
+                if (!bubbles[i].line) {
+                    for (let j = lastBubbleTotal; j < bubbles.length; j++) {
+                        let d = p5.dist(bubbles[i].x, bubbles[i].y, bubbles[j].x, bubbles[j].y);
+                        if (d >= 50 && d <= 350) {
+                            lines.push(
+                                new Line(bubbles[i].x, bubbles[i].y, bubbles[j].x, bubbles[j].y)
+                            );
+                            break;
+                        }
+                    }
                 }
             }
         });
 
-        p5.frameRate(30);
+        // Move the offset to the bubbles and lines to center the camera
+        bubbles.forEach((bubble) => {
+            bubble.x -= xAxisOffset / 2 - width / 2;
+        });
+
+        lines.forEach((line) => {
+            line.x1 -= xAxisOffset / 2 - width / 2;
+            line.x2 -= xAxisOffset / 2 - width / 2;
+        });
     };
 
     const draw = (p5) => {
-        // Draw the background of the canvas
         p5.background(186, 216, 235);
-
         p5.cursor(cursor);
 
-        // Draw the lines that connect the bubbles
+        // Draw the lines
         lines.forEach((line) => {
             p5.stroke(13, 92, 99);
             p5.strokeWeight(5);
             p5.line(line.x1, line.y1, line.x2, line.y2);
         });
 
-        // Draw the bubbles onto the canvas
+        // Draw the bubbles
         bubbles.forEach((bubble) => {
-            p5.stroke(13, 92, 99);
-            p5.strokeWeight(5);
-            if (bubble.selected) {
+            if (bubble.hover) {
+                cursor = "pointer";
+            }
+            if (bubble.selected || bubble.hover) {
                 p5.fill(13, 92, 99);
             } else {
                 p5.fill(68, 161, 160);
             }
+            p5.stroke(13, 92, 99);
+            p5.strokeWeight(5);
             p5.ellipse(bubble.x, bubble.y, bubble.r);
         });
+
+        // Draw the hover text if it is present
+        if (hoverSpeciesText !== "") {
+            const textSize = 15;
+            const padding = 5;
+            p5.fill(0, 0, 0);
+            p5.strokeWeight(0);
+            p5.rect(
+                hoverSpeciesX,
+                hoverSpeciesY - textSize,
+                p5.textWidth(hoverSpeciesText) + 2 * padding,
+                textSize * 1.4,
+                5
+            );
+
+            p5.fill(255, 255, 255);
+            p5.textSize(textSize);
+            p5.text(hoverSpeciesText, hoverSpeciesX + padding, hoverSpeciesY);
+        }
     };
 
-    const mouseClicked = (p5) => {
-        bubbles.forEach((bubble) => {
-            let d = p5.dist(p5.mouseX, p5.mouseY, bubble.x, bubble.y);
-            if (d < bubble.r) {
-                let changeX = bubble.x - window.innerWidth / 2;
-                let changeY = bubble.y - window.innerHeight / 2;
+    const mouseMoved = (p5, event) => {
+        if (event.target.className === "p5Canvas") {
+            // Check if mouse is currenly hovering over one of the bubbles
+            bubbles.forEach((bubble) => {
+                let d = p5.dist(bubble.x, bubble.y, p5.mouseX, p5.mouseY);
+                if (d < bubble.r) {
+                    bubble.hover = true;
+                    hoverSpeciesText = bubble.species;
+                    hoverSpeciesX = bubble.x - bubble.r / 2;
+                    hoverSpeciesY = bubble.y - bubble.r / 2 - 15;
+                } else {
+                    bubble.hover = false;
+                }
+            });
 
-                bubbles.forEach((bubble) => {
-                    bubble.selected = false;
-                    bubble.x -= changeX;
-                    bubble.y -= changeY;
-                });
-
-                lines.forEach((line) => {
-                    line.x1 -= changeX;
-                    line.y1 -= changeY;
-                    line.x2 -= changeX;
-                    line.y2 -= changeY;
-                });
-
-                fetchData(url + bubble.id).then((d) => {
-                    bubble.selected = true;
-                    setGbifObject(d);
-                });
+            // If the mouse is currenly hovering over a bubble change the cursor into a pointer
+            if (bubbles.some((e) => e.hover === true)) {
+                cursor = "pointer";
+            } else {
+                hoverSpeciesText = "";
+                cursor = "grab";
             }
-        });
+        }
+    };
+
+    const mouseClicked = (p5, event) => {
+        // Only select an object when the user clicks on the canvas
+        if (event.target.className === "p5Canvas") {
+            bubbles.forEach((bubble) => {
+                let d = p5.dist(bubble.x, bubble.y, p5.mouseX, p5.mouseY);
+                if (d < bubble.r) {
+                    // Center the screen on the bubble
+                    const changeX = bubble.x - window.innerWidth / 2;
+                    const changeY = bubble.y - window.innerHeight / 2;
+                    moveCamera(changeX, changeY);
+
+                    // Select the bubble and fetch the corresponding GBIF data
+                    bubble.selected = true;
+                    fetchData(url + bubble.id).then((d) => setSelectedGbifObject(d));
+
+                    // Reset the other bubbles when a new bubble is selected
+                    for (let i = 0; i < bubbles.length; i++) {
+                        if (bubble !== bubbles[i]) {
+                            bubbles[i].selected = false;
+                        }
+                    }
+                }
+            });
+        }
     };
 
     const mouseDragged = (p5) => {
-        cursor = "grabbing";
-
-        if (lastMousePosition) {
-            // Calculate the change in the mouse position
-            const change = {
-                x: lastMousePosition.x - p5.mouseX,
-                y: lastMousePosition.y - p5.mouseY
-            };
-            bubbles.forEach((bubble) => {
-                bubble.x -= change.x;
-                bubble.y -= change.y;
-            });
-            lines.forEach((line) => {
-                line.x1 -= change.x;
-                line.y1 -= change.y;
-                line.x2 -= change.x;
-                line.y2 -= change.y;
-            });
+        // Move the camera based on the change of the mouse position
+        if (lastMouseX) {
+            const changeMouseX = lastMouseX - p5.mouseX;
+            const changeMouseY = lastMouseY - p5.mouseY;
+            moveCamera(changeMouseX, changeMouseY);
         }
-        lastMousePosition = {
-            x: p5.mouseX,
-            y: p5.mouseY
-        };
+
+        lastMouseX = p5.mouseX;
+        lastMouseY = p5.mouseY;
+        cursor = "grabbing";
     };
 
     const mouseReleased = () => {
+        lastMouseX = null;
+        lastMouseY = null;
         cursor = "grab";
-        lastMousePosition = null;
     };
 
-    const mouseMoved = (p5) => {};
+    function moveCamera(changeX, changeY) {
+        lines.forEach((line) => {
+            line.x1 -= changeX;
+            line.y1 -= changeY;
+            line.x2 -= changeX;
+            line.y2 -= changeY;
+        });
+
+        bubbles.forEach((bubble) => {
+            bubble.x -= changeX;
+            bubble.y -= changeY;
+        });
+
+        hoverSpeciesX -= changeX;
+        hoverSpeciesY -= changeY;
+    }
 
     return (
         <Sketch
             setup={setup}
             draw={draw}
+            mouseMoved={mouseMoved}
             mouseClicked={mouseClicked}
             mouseDragged={mouseDragged}
             mouseReleased={mouseReleased}
@@ -170,25 +248,16 @@ function Canvas({ gbifIds, gbifObject, setGbifObject }) {
     );
 }
 
-function halton(index, base) {
-    let result = 0;
-    let f = 1 / base;
-    let i = index;
-    while (i > 0) {
-        result = result + f * (i % base);
-        i = Math.floor(i / base);
-        f = f / base;
-    }
-    return result;
-}
-
 class Bubble {
-    constructor(x, y, r, id) {
+    constructor(x, y, r, id, species) {
         this.x = x;
         this.y = y;
         this.r = r;
         this.id = id;
+        this.species = species;
+        this.line = false;
         this.selected = false;
+        this.hover = false;
     }
 }
 

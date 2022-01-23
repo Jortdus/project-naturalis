@@ -2,35 +2,37 @@ aside {
     position: fixed;
     top: 0;
     left: 0;
-
-    animation-name: open-animation;
-    animation-duration: 0.5s;
-}
-
-.close {
-    animation-name: close-animation;
-    animation-duration: 0.5s;
 }
 
 .object-container {
     position: relative;
     color: white;
-    background-color: #2e2d2d;
+    background-color: rgba(46, 45, 45, 0.99);
 
     width: 480px;
     height: 100vh;
     padding: 1.5em;
 }
 
-button {
+.close-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
     position: absolute;
-    right: 1.5em;
-    width: 15px;
-    height: 15px;
+    top: 0.5em;
+    right: 0.5em;
+    width: 44px;
+    height: 44px;
 }
 
-button:hover {
+.close-button:hover {
     cursor: pointer;
+}
+
+.close-button img {
+    width: 18px;
+    height: 18px;
 }
 
 .header {

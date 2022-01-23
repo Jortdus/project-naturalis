@@ -1,44 +1,52 @@
 import React from "react";
-import { Carousel } from "react-responsive-carousel";
 import "./Aside.css";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 
+const url = "https://www.gbif.org/occurrence/";
+
 function Aside({ gbifObject, setGbifObject }) {
-    function handleClick() {
-        document.getElementById("object").classList.add("close");
-        setTimeout(() => {
-            setGbifObject(null);
-        }, 500);
+    // Display the images when they are present
+    let imageContainer;
+    if (gbifObject.media[0]) {
+        imageContainer = (
+            <div className="images">
+                <ul>
+                    {gbifObject.media.map((e) => {
+                        <li>
+                            <img src={e.identifier} alt={`An image of ${gbifObject.species}`} />
+                        </li>;
+                    })}
+                </ul>
+            </div>
+        );
     }
+
+    function handleClick() {
+        setGbifObject(null);
+    }
+
     return (
-        <aside id="object">
+        <aside>
             <div className="object-container">
-                <button onClick={() => handleClick()}></button>
+                <div className="close-button" onClick={() => handleClick()}>
+                    <img src={process.env.PUBLIC_URL + "/close.svg"} alt="Close button" />
+                </div>
+
                 <div className="header">
                     <h2>{gbifObject.species}</h2>
-                    <ul>
+                    <ol className="taxonomic-ranks">
                         <li>{gbifObject.kingdom}</li>
                         <li>{gbifObject.phylum}</li>
                         <li>{gbifObject.class}</li>
                         <li>{gbifObject.order}</li>
                         <li>{gbifObject.family}</li>
                         <li>{gbifObject.genus}</li>
-                    </ul>
+                    </ol>
                 </div>
 
-                {gbifObject.media.length > 0 && (
-                    <div className="image-container">
-                        <Carousel showThumbs={false}>
-                            {gbifObject.media.map((e) => (
-                                <div>
-                                    <img src={e.identifier} alt=""></img>
-                                </div>
-                            ))}
-                        </Carousel>
-                    </div>
-                )}
+                {imageContainer}
 
-                <div className="collection-data-container">
+                <div className="collection-data">
                     <ul>
                         <li>{gbifObject.identifiedBy}</li>
                         <li>{gbifObject.eventDate}</li>
@@ -47,12 +55,11 @@ function Aside({ gbifObject, setGbifObject }) {
                     </ul>
                 </div>
 
-                <a
-                    href={"https://www.gbif.org/occurrence/" + gbifObject.key}
-                    target="_blank"
-                >
-                    Link naar object op gbif
-                </a>
+                <div className="gbif-link">
+                    <a href={url + gbifObject.key} target="_blank">
+                        Alle gegevens van dit object
+                    </a>
+                </div>
             </div>
         </aside>
     );
