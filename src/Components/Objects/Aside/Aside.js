@@ -11,11 +11,11 @@ function Aside({ gbifObject, setGbifObject }) {
         imageContainer = (
             <div className="images">
                 <ul>
-                    {gbifObject.media.map((e) => {
-                        <li>
+                    {gbifObject.media.map((e, index) => (
+                        <li key={`image-${index}`}>
                             <img src={e.identifier} alt={`An image of ${gbifObject.species}`} />
-                        </li>;
-                    })}
+                        </li>
+                    ))}
                 </ul>
             </div>
         );
