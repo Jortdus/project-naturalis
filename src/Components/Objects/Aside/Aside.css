@@ -70,11 +70,8 @@ h2 {
     margin-bottom: 1em;
 }
 
-.images li + li {
-    margin-bottom: 0;
-}
-
 img {
+    vertical-align: top;
     border-radius: 0.5em;
     width: 100%;
 }

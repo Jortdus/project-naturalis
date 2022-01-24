@@ -9,6 +9,7 @@ import ObjectCount from "./ObjectCount/ObjectCount.js";
 import Canvas from "./Canvas/Canvas.js";
 
 const url = "https://api.gbif.org/v1/occurrence/";
+let objectsWithImages = [];
 
 function Objects() {
     const [selectedGbifObject, setSelectedGbifObject] = useState(null);
