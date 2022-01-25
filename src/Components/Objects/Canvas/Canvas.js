@@ -18,6 +18,9 @@ let hoverSpeciesX = 0;
 let hoverSpeciesY = 0;
 let strokeColor;
 let bubbleColor;
+let changeXPerTick = 0;
+let changeYPerTick = 0;
+let animationTicks = 0;
 
 let img;
 let imgX;
@@ -197,7 +200,7 @@ function Canvas({
                 p5.text(hoverSpeciesText, hoverSpeciesX + padding, hoverSpeciesY);
             }
 
-            // Move the example image every 3 seconds
+            // Move the example image every 5 seconds
             ticks++;
             if (ticks >= 300) {
                 ticks = 0;
@@ -211,6 +214,14 @@ function Canvas({
                         imgIndex = 0;
                     }
                 }
+            }
+
+            if ((changeXPerTick !== 0 || changeYPerTick !== 0) && animationTicks < 20) {
+                animationTicks++;
+                moveCamera(changeXPerTick, changeYPerTick);
+            } else {
+                changeXPerTick = 0;
+                changeYPerTick = 0;
             }
         };
 
@@ -245,10 +256,13 @@ function Canvas({
                 bubbles.forEach((bubble) => {
                     let d = p5.dist(bubble.x, bubble.y, p5.mouseX, p5.mouseY);
                     if (d < bubble.r) {
-                        // Center the screen on the bubble
-                        const changeX = bubble.x - window.innerWidth / 2;
-                        const changeY = bubble.y - window.innerHeight / 2;
-                        moveCamera(changeX, changeY);
+                        // Center the screen on the bubble by culculating the distance the objects need to be moved per tick
+                        changeXPerTick = (bubble.x - window.innerWidth / 2) / 20;
+                        changeYPerTick = (bubble.y - window.innerHeight / 2) / 20;
+                        animationTicks = 0;
+
+                        console.log(changeXPerTick);
+                        console.log(changeYPerTick);
 
                         // Select the bubble and fetch the corresponding GBIF data
                         bubble.selected = true;
