@@ -79,8 +79,53 @@ img {
     width: 100%;
 }
 
+.collection-data {
+    position: relative;
+    background: rgba(93, 91, 91, 0.5);
+    border-radius: 0.5em;
+
+    padding: 4em;
+    margin-bottom: 2em;
+}
+
+#institution-name {
+    font-size: 12px;
+    color: #919191;
+    position: absolute;
+    top: 0.625rem;
+    right: 0.625rem;
+    text-transform: uppercase;
+}
+
+.collection-data h3 {
+    font-size: 22px;
+    font-style: italic;
+    margin-bottom: 2rem;
+}
+
+.collection-data ul li {
+    display: flex;
+    justify-content: space-between;
+}
+
+.collection-data ul li + li {
+    margin-top: 1em;
+}
+
+.collection-data ul li p {
+    font-size: 15px;
+}
+
 li {
     list-style-type: none;
+}
+
+.gbif-link {
+    padding-left: 1em;
+}
+
+.gbif-link a {
+    color: #919191;
 }
 
 @keyframes open-animation {

@@ -261,9 +261,6 @@ function Canvas({
                         changeYPerTick = (bubble.y - window.innerHeight / 2) / 20;
                         animationTicks = 0;
 
-                        console.log(changeXPerTick);
-                        console.log(changeYPerTick);
-
                         // Select the bubble and fetch the corresponding GBIF data
                         bubble.selected = true;
                         setSelectedGbifObject(gbifObjects.find((e) => e.key == bubble.id));

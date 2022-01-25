@@ -5,6 +5,21 @@ import "react-responsive-carousel/lib/styles/carousel.min.css";
 const url = "https://www.gbif.org/occurrence/";
 
 function Aside({ gbifObject, setGbifObject }) {
+    const monthNumberToString = [
+        "Januari",
+        "Februari",
+        "April",
+        "Mei",
+        "Juni",
+        "Maart",
+        "Juli",
+        "Augustus",
+        "September",
+        "October",
+        "November",
+        "December"
+    ];
+
     // Display the images when they are present
     let imageContainer;
     if (gbifObject.media[0]) {
@@ -19,6 +34,33 @@ function Aside({ gbifObject, setGbifObject }) {
                 </ul>
             </div>
         );
+    }
+
+    // Display the discoverer when he/she is present
+    let identifiedByListElement;
+    if (gbifObject.identifiedBy) {
+        identifiedByListElement = (
+            <li>
+                <p>
+                    <strong>Ontdekker</strong>
+                </p>
+                <p>{gbifObject.identifiedBy}</p>
+            </li>
+        );
+    }
+
+    // Display the date based on the available data
+    let date;
+    if (gbifObject.day) {
+        date = (
+            <p>{`${gbifObject.day} ${monthNumberToString[gbifObject.month - 1]} ${
+                gbifObject.year
+            }`}</p>
+        );
+    } else if (gbifObject.month) {
+        date = <p>{`${monthNumberToString[gbifObject.month - 1]} ${gbifObject.year}`}</p>;
+    } else if (gbifObject.year) {
+        date = <p>{gbifObject.year}</p>;
     }
 
     function handleClick() {
@@ -47,11 +89,21 @@ function Aside({ gbifObject, setGbifObject }) {
                 {imageContainer}
 
                 <div className="collection-data">
+                    <p id="institution-name">naturalis biodiversity center</p>
+                    <h3>{gbifObject.species}</h3>
                     <ul>
-                        <li>{gbifObject.identifiedBy}</li>
-                        <li>{gbifObject.eventDate}</li>
-                        <li>{gbifObject.identifier}</li>
-                        <li>{gbifObject.key}</li>
+                        {identifiedByListElement}
+                        <li>
+                            <p>
+                                <strong>Verzameldatum</strong>
+                            </p>
+                            {date}
+                        </li>
+
+                        <li>
+                            <strong>GBIF id</strong>
+                            <p>{gbifObject.key}</p>
+                        </li>
                     </ul>
                 </div>
 
