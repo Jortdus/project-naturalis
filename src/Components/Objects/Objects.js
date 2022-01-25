@@ -9,7 +9,7 @@ import ObjectCount from "./ObjectCount/ObjectCount.js";
 import Canvas from "./Canvas/Canvas.js";
 
 const url = "https://api.gbif.org/v1/occurrence/";
-let objectsWithImages = [];
+let objectsWithImage = [];
 
 function Objects() {
     const [selectedGbifObject, setSelectedGbifObject] = useState(null);
@@ -47,6 +47,7 @@ function Objects() {
         let radius = 50;
         if (value.media[0]) {
             radius += 50;
+            objectsWithImage.push(value.key);
         }
         if (value.identifiedBy) {
             radius += 10;
@@ -61,6 +62,7 @@ function Objects() {
             <Canvas
                 species={genusObject.species}
                 gbifObjects={gbifObjects}
+                objectsWithtImage={objectsWithImage}
                 selectedGbifObject={selectedGbifObject}
                 setSelectedGbifObject={setSelectedGbifObject}
             />

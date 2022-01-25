@@ -2,6 +2,9 @@ aside {
     position: fixed;
     top: 0;
     left: 0;
+
+    animation-name: open-animation;
+    animation-duration: 0.5s;
 }
 
 .object-container {
@@ -86,14 +89,5 @@ li {
     }
     to {
         left: 0;
-    }
-}
-
-@keyframes close-animation {
-    from {
-        left: 0;
-    }
-    to {
-        left: -480px;
     }
 }
