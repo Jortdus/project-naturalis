@@ -17,7 +17,10 @@ function App() {
                         path="/:kingdom/:phylum/:classs/:order/:family"
                         element={<Categories />}
                     />
-                    <Route path="/:genus/objects" element={<Objects />} />
+                    <Route
+                        path="/:kingdom/:phylum/:classs/:order/:family/:genus/objects"
+                        element={<Objects />}
+                    />
                 </Routes>
             </Router>
         </div>

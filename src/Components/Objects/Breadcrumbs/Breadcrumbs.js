@@ -14,7 +14,7 @@ function Breadcrumbs({ taxomicRanks }) {
                         <a href="">{taxomicRanks.phylum}</a>
                     </li>
                     <li>
-                        <a href="">{taxomicRanks.class}</a>
+                        <a href="">{taxomicRanks.classs}</a>
                     </li>
                     <li>
                         <a href="">{taxomicRanks.order}</a>

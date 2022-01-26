@@ -98,7 +98,7 @@ function Canvas({ rankChildren, setRankChildren, kingdom, family, currentUrl }) 
                 let d = p5.dist(bubble.x, bubble.y, p5.mouseX, p5.mouseY);
                 if (d < bubble.r / 2) {
                     if (family) {
-                        navigate("/" + bubble.rankName + "/objects");
+                        navigate(currentUrl + bubble.rankName + "/objects");
                     } else {
                         navigate(currentUrl + bubble.rankName);
                         setRankChildren(

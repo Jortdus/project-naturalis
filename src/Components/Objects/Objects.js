@@ -6,6 +6,7 @@ import fetchData from "../../Utils/fetchData.js";
 import Aside from "./Aside/Aside.js";
 import ObjectCount from "./ObjectCount/ObjectCount.js";
 import Canvas from "./Canvas/Canvas.js";
+import Breadcrumbs from "./Breadcrumbs/Breadcrumbs";
 
 const url = "https://api.gbif.org/v1/occurrence/";
 let objectsWithImage = [];
@@ -21,7 +22,7 @@ function Objects() {
     }
 
     // Retrieve the gbif ids based on the genus from the url
-    let { genus } = useParams();
+    let { kingdom, phylum, classs, order, family, genus } = useParams();
     let genusObject = data.find((e) => e.genus === genus);
 
     // Fetch object data
@@ -63,6 +64,16 @@ function Objects() {
         <div>
             <ObjectCount total={objectTotal} />
             <div>{aside}</div>
+            <Breadcrumbs
+                taxomicRanks={{
+                    kingdom: kingdom,
+                    phylum: phylum,
+                    classs: classs,
+                    order: order,
+                    family: family,
+                    genus: genus
+                }}
+            />
             <Canvas
                 species={genusObject.species}
                 gbifObjects={gbifObjects}
