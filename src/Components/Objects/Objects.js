@@ -3,7 +3,6 @@ import { useParams } from "react-router-dom";
 import "./Objects.css";
 import data from "../../Data/idData.json";
 import fetchData from "../../Utils/fetchData.js";
-
 import Aside from "./Aside/Aside.js";
 import ObjectCount from "./ObjectCount/ObjectCount.js";
 import Canvas from "./Canvas/Canvas.js";
@@ -43,6 +42,11 @@ function Objects() {
         });
     }, []);
 
+    let objectTotal = 0;
+    genusObject.species.forEach((species) => {
+        objectTotal += species.ids.length;
+    });
+
     function calculateRadius(value) {
         let radius = 50;
         if (value.media[0]) {
@@ -57,7 +61,7 @@ function Objects() {
 
     return (
         <div>
-            <ObjectCount species={genusObject.species} />
+            <ObjectCount total={objectTotal} />
             <div>{aside}</div>
             <Canvas
                 species={genusObject.species}

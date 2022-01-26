@@ -230,7 +230,7 @@ function Canvas({
                 // Check if mouse is currenly hovering over one of the bubbles
                 bubbles.forEach((bubble) => {
                     let d = p5.dist(bubble.x, bubble.y, p5.mouseX, p5.mouseY);
-                    if (d < bubble.r) {
+                    if (d < bubble.r / 2) {
                         bubble.hover = true;
                         hoverSpeciesText = bubble.species;
                         hoverSpeciesX = bubble.x - p5.textWidth(hoverSpeciesText) / 2 - 5; // Postion the hover text in the middle of the bubble
@@ -255,7 +255,7 @@ function Canvas({
             if (event.target.className === "p5Canvas") {
                 bubbles.forEach((bubble) => {
                     let d = p5.dist(bubble.x, bubble.y, p5.mouseX, p5.mouseY);
-                    if (d < bubble.r) {
+                    if (d < bubble.r / 2) {
                         // Center the screen on the bubble by culculating the distance the objects need to be moved per tick
                         changeXPerTick = (bubble.x - window.innerWidth / 2) / 20;
                         changeYPerTick = (bubble.y - window.innerHeight / 2) / 20;
