@@ -1,0 +1,14 @@
+.react-p5 {
+    height: 100vh;
+}
+
+.empty-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    background: rbg(186, 216, 235);
+
+    width: 100vw;
+    height: 100vh;
+}

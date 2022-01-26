@@ -1,0 +1,25 @@
+#object-count {
+    position: absolute;
+    top: 1em;
+    left: 1em;
+    display: flex;
+    color: white;
+}
+
+#object-count img {
+    width: 24.72px;
+    height: 58px;
+    border-radius: 0px;
+    margin: 0 0.6em;
+}
+
+#object-count section {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    margin-left: 0.75em;
+}
+
+#object-count strong {
+    font-weight: 700;
+}

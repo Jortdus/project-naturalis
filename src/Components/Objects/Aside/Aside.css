@@ -7,30 +7,36 @@ aside {
     animation-duration: 0.5s;
 }
 
-.close {
-    animation-name: close-animation;
-    animation-duration: 0.5s;
-}
-
 .object-container {
     position: relative;
     color: white;
-    background-color: #2e2d2d;
+    background-color: rgba(46, 45, 45, 0.99);
+    overflow-y: scroll;
 
     width: 480px;
     height: 100vh;
     padding: 1.5em;
 }
 
-button {
+.close-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
     position: absolute;
-    right: 1.5em;
-    width: 15px;
-    height: 15px;
+    top: 0.5em;
+    right: 0.5em;
+    width: 44px;
+    height: 44px;
 }
 
-button:hover {
+.close-button:hover {
     cursor: pointer;
+}
+
+.close-button img {
+    width: 18px;
+    height: 18px;
 }
 
 .header {
@@ -44,7 +50,7 @@ h2 {
     margin-bottom: 10px;
 }
 
-.header ul {
+.header ol {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
@@ -53,20 +59,73 @@ h2 {
     margin-bottom: 30px;
 }
 
-.header ul li {
+.header ol li {
     font-size: 15px;
     text-transform: uppercase;
     color: #919191;
 }
 
+.images {
+    margin-bottom: 2em;
+}
+
+.images li {
+    margin-bottom: 1em;
+}
+
 img {
+    vertical-align: top;
     border-radius: 0.5em;
     width: 100%;
-    height: 21.25em;
+}
+
+.collection-data {
+    position: relative;
+    background: rgba(93, 91, 91, 0.5);
+    border-radius: 0.5em;
+
+    padding: 4em;
+    margin-bottom: 2em;
+}
+
+#institution-name {
+    font-size: 12px;
+    color: #919191;
+    position: absolute;
+    top: 0.625rem;
+    right: 0.625rem;
+    text-transform: uppercase;
+}
+
+.collection-data h3 {
+    font-size: 22px;
+    font-style: italic;
+    margin-bottom: 2rem;
+}
+
+.collection-data ul li {
+    display: flex;
+    justify-content: space-between;
+}
+
+.collection-data ul li + li {
+    margin-top: 1em;
+}
+
+.collection-data ul li p {
+    font-size: 15px;
 }
 
 li {
     list-style-type: none;
+}
+
+.gbif-link {
+    padding-left: 1em;
+}
+
+.gbif-link a {
+    color: #919191;
 }
 
 @keyframes open-animation {
@@ -75,14 +134,5 @@ li {
     }
     to {
         left: 0;
-    }
-}
-
-@keyframes close-animation {
-    from {
-        left: 0;
-    }
-    to {
-        left: -480px;
     }
 }

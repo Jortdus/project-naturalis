@@ -36,6 +36,7 @@ function Categories() {
     const draw = (p5) => {
         p5.frameRate(60)
         p5.noStroke();
+
         p5.strokeWeight(2);
         p5.fill(68, 161, 160);
 

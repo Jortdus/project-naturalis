@@ -1,58 +1,117 @@
 import React from "react";
-import { Carousel } from "react-responsive-carousel";
 import "./Aside.css";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 
+const url = "https://www.gbif.org/occurrence/";
+
 function Aside({ gbifObject, setGbifObject }) {
-    function handleClick() {
-        document.getElementById("object").classList.add("close");
-        setTimeout(() => {
-            setGbifObject(null);
-        }, 500);
+    const monthNumberToString = [
+        "Januari",
+        "Februari",
+        "April",
+        "Mei",
+        "Juni",
+        "Maart",
+        "Juli",
+        "Augustus",
+        "September",
+        "October",
+        "November",
+        "December"
+    ];
+
+    // Display the images when they are present
+    let imageContainer;
+    if (gbifObject.media[0]) {
+        imageContainer = (
+            <div className="images">
+                <ul>
+                    {gbifObject.media.map((e, index) => (
+                        <li key={`image-${index}`}>
+                            <img src={e.identifier} alt={`An image of ${gbifObject.species}`} />
+                        </li>
+                    ))}
+                </ul>
+            </div>
+        );
     }
+
+    // Display the discoverer when he/she is present
+    let identifiedByListElement;
+    if (gbifObject.identifiedBy) {
+        identifiedByListElement = (
+            <li>
+                <p>
+                    <strong>Ontdekker</strong>
+                </p>
+                <p>{gbifObject.identifiedBy}</p>
+            </li>
+        );
+    }
+
+    // Display the date based on the available data
+    let date;
+    if (gbifObject.day) {
+        date = (
+            <p>{`${gbifObject.day} ${monthNumberToString[gbifObject.month - 1]} ${
+                gbifObject.year
+            }`}</p>
+        );
+    } else if (gbifObject.month) {
+        date = <p>{`${monthNumberToString[gbifObject.month - 1]} ${gbifObject.year}`}</p>;
+    } else if (gbifObject.year) {
+        date = <p>{gbifObject.year}</p>;
+    }
+
+    function handleClick() {
+        setGbifObject(null);
+    }
+
     return (
-        <aside id="object">
+        <aside>
             <div className="object-container">
-                <button onClick={() => handleClick()}></button>
+                <div className="close-button" onClick={() => handleClick()}>
+                    <img src={process.env.PUBLIC_URL + "/close.svg"} alt="Close button" />
+                </div>
+
                 <div className="header">
                     <h2>{gbifObject.species}</h2>
-                    <ul>
+                    <ol className="taxonomic-ranks">
                         <li>{gbifObject.kingdom}</li>
                         <li>{gbifObject.phylum}</li>
                         <li>{gbifObject.class}</li>
                         <li>{gbifObject.order}</li>
                         <li>{gbifObject.family}</li>
                         <li>{gbifObject.genus}</li>
-                    </ul>
+                    </ol>
                 </div>
 
-                {gbifObject.media.length > 0 && (
-                    <div className="image-container">
-                        <Carousel showThumbs={false}>
-                            {gbifObject.media.map((e) => (
-                                <div>
-                                    <img src={e.identifier} alt=""></img>
-                                </div>
-                            ))}
-                        </Carousel>
-                    </div>
-                )}
+                {imageContainer}
 
-                <div className="collection-data-container">
+                <div className="collection-data">
+                    <p id="institution-name">naturalis biodiversity center</p>
+                    <h3>{gbifObject.species}</h3>
                     <ul>
-                        <li>{gbifObject.identifiedBy}</li>
-                        <li>{gbifObject.eventDate}</li>
-                        <li>{gbifObject.identifier}</li>
-                        <li>{gbifObject.key}</li>
+                        {identifiedByListElement}
+                        <li>
+                            <p>
+                                <strong>Verzameldatum</strong>
+                            </p>
+                            {date}
+                        </li>
+
+                        <li>
+                            <strong>GBIF id</strong>
+                            <p>{gbifObject.key}</p>
+                        </li>
                     </ul>
                 </div>
 
-                <a
-                    href={"https://www.gbif.org/occurrence/" + gbifObject.key}
-                    target="_blank"
-                >
-                    Link naar object op gbif
-                </a>
+                <div className="gbif-link">
+                    <a href={url + gbifObject.key} target="_blank">
+                        Alle gegevens van dit object
+                    </a>
+                </div>
             </div>
         </aside>
     );
